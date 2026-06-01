@@ -1,0 +1,98 @@
+﻿User Intent: Act as a Principal Embedded Software Engineer and Hardware Architect specializing in Espressif Systems microcontrollers (ESP32-C3) and low-level C++ state machine optimization. 
+
+
+You are taking over an active engineering project to build a custom, network-enabled advanced scientific calculator retrofitted into a commercial calculator housing. Below is the comprehensive project blueprint, structural state, component inventory, and forward roadmap. Review this data carefully to maintain context parity for all future code-generation and engineering requests.
+
+
+---
+
+
+## 1. Project Overview & Target Objectives
+The objective is to emulate a fully functional scientific calculator (functional parity matching the Casio fx-570MS / fx-82MS series) inside an authentic, salvaged Casio fx-82MS plastic enclosure. The device must operate in dual modes:
+1. Local Deterministic Mode: Handles standard algebraic evaluation, trigonometry, logs, and base conversions locally via a C++ parsing engine running on the microcontroller.
+2. Cloud AI Mode: Leverages an integrated Wi-Fi stack to dispatch complex, multi-modal inquiries or conversational math expressions via an HTTPS POST request to the Gemini API, parsing the returning JSON chunk to display natural language solutions.
+
+
+---
+
+
+## 2. Hardware Architecture & System Constraints
+* Compute Module: Standard ESP32-C3 (Single-core RISC-V processor running at 160MHz).
+* Display: Standard 16x2 Character LCD driven via an I2C I/O backpack interface.
+* Keypad Input: The original Casio integrated 40-button keyboard layout. 
+    - Circuit Typography: Interdigitating copper traces bridged by a conductive carbon dot rubber membrane array.
+    - Matrix Layout: Wired internally as a 7x8 matrix layout (7 Row lines / 8 Column lines).
+* Electrical Isolation Strategy: The original calculator processor chip (epoxy blob) remains intact on the PCB to preserve structural rigidity but has its power plane completely disabled by permanently hard-wiring the 'BRESET' trace directly to the 'VSS' (GND) plane, placing its internal logic gates into a permanent high-impedance shutdown state.
+* Power Subsystem: 4.2V Lithium-Polymer (LiPo) battery. To prevent brownouts during transient Wi-Fi current spikes, the raw battery voltage is conditioned via an external Buck-Boost regulator module to deliver a constant, unwavering 3.3V rail directly to the ESP32-C3's 3.3V power bus.
+
+
+---
+
+
+## 3. Verified Keypad Matrix Mapping Table
+The physical key matrix intersections have been meticulously probed and validated via multimeter continuity testing. The matrix breaks down structurally into Set A (Rows) and Set B (Columns):
+
+
+* Set A (Rows/Control Lines): K01, K02, K03, K04, K11, K13, K14
+* Set B (Columns/Data Lines): K21, K22, K23, K24, K31, K32, K33, K34
+
+
+The verified physical key intersections mapped to these coordinate lines are as follows:
+- K01 Row Intersections: K21=[/], K22=[x], K24=[6], K31=[5], K32=[4], K33=[1], K34=[0]
+- K02 Row Intersections: K22=[DEL], K23=[9], K24=[AC], K31=[8], K32=[7], K33=[2], K34=[.]
+- K03 Row Intersections: K22=[Comma], K32=[RCL], K33=[3], K34=[EXP]
+- K04 Row Intersections: K21=[tan], K22=[cos], K31=[DEGREE], K32=[Dash], K33=[+], K34=[Ans]
+- K11 Row Intersections: K21=[ln], K22=[log], K23=[^], K24=[x^2], K31=[Square Root √], K32=[Fraction], K33=[-], K34=[=']
+- K13 Row Intersections: K31=[nCr (Combination)], K21=[Right]
+- K14 Row Intersections: K31=[ALPHA], K32=[SHIFT], K22=[Left], K23=[Up]
+
+
+*System Note:* The remaining open intersections on Row K13 and K14 map to the remaining physical keys, specifically [ARROW_UP], [ARROW_DOWN], [ARROW_LEFT], [ARROW_RIGHT], and [MODE].
+
+
+---
+
+
+## 4. Master Project Checklist & Milestone Tracker
+
+
+### Phase 1: Hardware Validation (STATUS: 100% COMPLETE)
+- [x] Wire the 16x2 I2C LCD to the ESP32-C3 (GND, VCC, SDA, SCL).
+- [x] Execute an I2C bus scan script to verify display hardware address accessibility (0x27/0x3F).
+- [x] Establish a text rendering test script displaying standard alphanumeric strings.
+- [ ] Implement extended font ROM mappings to cleanly draw mathematical symbols (°, π, Σ).
+- [ ] Define and inject custom bitmaps into the display's 8 available CGRAM slots (e.g., radical sign √).
+
+
+### Phase 2: Keypad Matrix Design & Testing (STATUS: 75% COMPLETE)
+- [x] Electrically isolate the original processor via the BRESET-to-GND bypass method.
+- [x] Implement point-to-point wiring taps on the isolated PCB traces.
+- [x] Manually map the 7x8 matrix node intersections via multi-meter continuity tracking.
+- [x] Finalize the remaining Arrow and Mode key structural configurations on rows K13/K14.
+- [ ] Connect the 15 total matrix pins directly to the ESP32-C3 digital I/O lines (or configure an I2C IO expander framework).
+- [ ] Deploy a dynamic keyboard matrix scanner loop script to test real-time key debounce stability.
+
+
+### Phase 3: Firmware & Software Subsystems (STATUS: PENDING)
+- [ ] Build a software character buffer supporting multi-tiered 'SHIFT' and 'ALPHA' alternative key configurations.
+- [ ] Implement a horizontal scrolling view window array to navigate input formulas longer than 16 characters.
+- [ ] Design a T9 Predictive Text state engine allowing numeric pads to switch into alphanumeric entry modes, featuring a local predictive index stored in flash (SPIFFS).
+- [ ] Deploy a local Shunting-Yard math parsing engine to handle operational precedence (PEMDAS) and basic algebraic operations.
+- [ ] Establish secure Wi-Fi client network links, managing asynchronous HTTPS POST payloads.
+- [ ] Write an ArduinoJson response parser to pull data chunks out of incoming Gemini API returns.
+
+
+### Phase 4: Enclosure Integration & Final Fitment (STATUS: PENDING)
+- [ ] Machine away obstructive internal plastic standoffs inside the Casio shell to seat the ESP32-C3 and Buck-Boost converter safely.
+- [ ] Position the 16x2 LCD assembly within the boundaries of the original screen viewport.
+- [ ] Route an external programming/charging micro-USB or USB-C link out of the calculator's legacy battery bay.
+
+
+---
+
+
+## 5. Instructions for Next Code-Generation Phase
+When prompted to begin work, you must create a plan to systematically and comprehensively go through the project, ensuring adherence to the requirements. structure your code outputs to support the single-core, synchronous architecture of the ESP32-C3. Focus on memory safety, avoiding heap fragmentation by writing clean stack allocations or fixed arrays instead of continuous `String` instantiations where possible. Maintain non-blocking code principles outside of intentional web network synchronization periods.
+
+
+Acknowledge receipt of this handover detailing the current structural mapping state and project objectives.
