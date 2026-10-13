@@ -42,7 +42,7 @@ void setup() {
   lcd.setCursor(0, 1);
   lcd.print("Matrix Ready...");
   
-  Serial.println("\n--- FX-82MS Swapped-Pin Validation Boot ---");
+  Serial.println("----- Swapped-Pin Validation Boot ---");
 
   // Initialize Row Pins (Outputs)
   for (int i = 0; i < ROW_COUNT; i++) {
